@@ -1,0 +1,17 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# WoW local files
+*.lua.bak
+WhatShouldIDoDB.lua
+
+# Release zips
+*.zip
+
+# IDE
+.vscode/
+.idea/
+
+# CurseForge packager output
+.release/

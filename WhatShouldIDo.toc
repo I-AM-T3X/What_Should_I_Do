@@ -1,0 +1,41 @@
+## Interface: 120007
+## Title: What Should I Do?
+## Notes: Spin wheels to help decide what to do in WoW. Features activity, character creator, leveling, name generator, professions, and raids & dungeons spinners.
+## Author: I_AM_T3X
+## Version: 1.1.0
+## SavedVariables: WhatShouldIDoDB
+
+# Core (load first — constants, theme, helpers, data must precede panels)
+Core\Constants.lua
+Core\Theme.lua
+Core\SlotMachine.lua
+
+# Data (loaded before Roster so CLASS_COLORS is available for NormaliseClass)
+Data\Races.lua
+Data\Activities.lua
+Data\Expansions.lua
+Data\Professions.lua
+Data\RaidsDungeons.lua
+Data\Names.lua
+
+# Core continued (Roster needs CLASS_COLORS from Data\Races)
+Core\Roster.lua
+Core\DB.lua
+
+# UI primitives
+Core\LeftNav.lua
+
+# Panels
+Panels\Activity.lua
+Panels\Creator.lua
+Panels\Leveling.lua
+Panels\Names.lua
+Panels\Professions.lua
+Panels\RaidsDungeons.lua
+Panels\About.lua
+
+# Settings window
+Settings\Settings.lua
+
+# Main window + init
+MainFrame.lua
