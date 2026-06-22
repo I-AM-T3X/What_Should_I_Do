@@ -2,7 +2,9 @@
 ## Title: What Should I Do?
 ## Notes: Spin wheels to help decide what to do in WoW. Features activity, character creator, leveling, name generator, professions, and raids & dungeons spinners.
 ## Author: I_AM_T3X
+## X-License: GPL-3.0
 ## Version: 1.1.0
+## X-License: GPL-3.0
 ## SavedVariables: WhatShouldIDoDB
 
 # Core (load first — constants, theme, helpers, data must precede panels)

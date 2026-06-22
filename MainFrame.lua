@@ -126,8 +126,8 @@ initFrame:SetScript("OnEvent",function(self,event,arg1)
     end
 end)
 
-SLASH_SPINWHEELS1="/sw" ; SLASH_SPINWHEELS2="/spinwheels" ; SLASH_SPINWHEELS3="/wsid"
-SlashCmdList["SPINWHEELS"]=function(msg)
+SLASH_WSID1="/wsid" ; SLASH_WSID2="/whatshouldido"
+SlashCmdList["WSID"]=function(msg)
     msg=strtrim(msg)
     local msgL=msg:lower()
     if msgL=="WSID_Roster" then

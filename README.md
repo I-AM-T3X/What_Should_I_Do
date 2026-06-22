@@ -53,8 +53,7 @@ Choose from 5 preset color themes or build a fully custom theme. Requires a UI r
 | Command | Action |
 |---------|--------|
 | `/wsid` | Toggle main window |
-| `/sw` | Toggle main window |
-| `/spinwheels` | Toggle main window |
+| `/whatshouldido` | Toggle main window |
 | `/wsid settings` | Toggle settings window |
 | `/wsid roster` | Force roster refresh |
 
@@ -90,4 +89,4 @@ The addon automatically adds your current character to the roster every login. L
 
 ## License
 
-All rights reserved. © I_AM_T3X
+This project is licensed under the [GNU General Public License v3.0](LICENSE).
