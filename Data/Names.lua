@@ -35,9 +35,9 @@ local NAME_DATA = {
     },
     ["Troll"] = {
         male   = {{"Akil","Bwon","Dal","Gan","Hak","Jin","Kaz","Khal","Mal","Rak","Ras","Sen","Tal","Vol","Wal","Zal","Zan","Zar","Zep","Zul"},
-                  {"'a","'amon","'ar","'ari","'jin","'kah","'kan","'kar","'kas","'rak","'raki","'rik","'ro","'rok","'thas","'tiki","'zar","'zin","'zum"}},
+                  {"a","amon","ar","ari","jin","kah","kan","kar","kas","rak","raki","rik","ro","rok","thas","tiki","zar","zin","zum"}},
         female = {{"Akil","Bwon","Dal","Gan","Hak","Jin","Kaz","Khal","Mal","Rak","Ras","Sen","Tal","Vol","Wal","Zal","Zan","Zar","Zep","Zul"},
-                  {"'a","'aja","'ali","'ama","'ani","'ara","'ari","'asha","'ini","'ira","'isa","'ita","'iya","'ola","'ona","'ora","'sha","'tika","'ya","'za"}},
+                  {"a","aja","ali","ama","ani","ara","ari","asha","ini","ira","isa","ita","iya","ola","ona","ora","sha","tika","ya","za"}},
     },
     ["Blood Elf"] = {
         male   = {{"Ael","Anar","Bel","Dath","Elar","Fal","Ial","Kael","Lor","Mal","Nath","Quel","Rael","Sal","Selth","Tal","Thal","Vel","Xal","Zel"},

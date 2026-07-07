@@ -3,14 +3,13 @@
 
 function BuildAboutPanel(contentArea)
     local panel = MakePanel(contentArea)
-    local W = WSID_CONT_W
 
     local scrollBG, scrollContent, scrollReset = MakeScrollBox(panel, W, WSID_WIN_H-30-WSID_PAD*2)
     scrollBG:SetPoint("TOPLEFT", panel, "TOPLEFT", WSID_PAD, -WSID_PAD)
 
     local lines = {
         {text="What Should I Do?", size=16, color={C.bright_text[1],C.bright_text[2],C.bright_text[3]}},
-        {text="Version 1.0.0",     size=11, color={C.dim_text[1],C.dim_text[2],C.dim_text[3]}},
+        {text="Version 1.1.1",     size=11, color={C.dim_text[1],C.dim_text[2],C.dim_text[3]}},
         {text=" ", size=5},
         {text="Author:  I_AM_T3X", size=12, color={C.bright_text[1],C.bright_text[2],C.bright_text[3]}},
         {text=" ", size=5},
@@ -42,6 +41,10 @@ function BuildAboutPanel(contentArea)
         {text="Import/Export --  Share WSID_Roster strings between two accounts.", size=11, color={C.dim_text[1],C.dim_text[2],C.dim_text[3]}},
         {text="Colors        --  Pick a preset theme or build custom colors.", size=11, color={C.dim_text[1],C.dim_text[2],C.dim_text[3]}},
         {text=" ", size=5},
+        {text="UI Scale:", size=12, color={C.header_txt[1],C.header_txt[2],C.header_txt[3]}},
+        {text="Found in Settings > UI Scale. Scales the entire addon from 50%% to 200%%.", size=11, color={C.dim_text[1],C.dim_text[2],C.dim_text[3]}},
+        {text="Useful for accessibility or high-resolution displays. Changes apply instantly.", size=11, color={C.dim_text[1],C.dim_text[2],C.dim_text[3]}},
+        {text=" ", size=5},
         {text="Minimap Button:", size=12, color={C.header_txt[1],C.header_txt[2],C.header_txt[3]}},
         {text="Left-click   --  Open or close the main window.", size=11, color={C.dim_text[1],C.dim_text[2],C.dim_text[3]}},
         {text="Right-click  --  Open Settings.", size=11, color={C.dim_text[1],C.dim_text[2],C.dim_text[3]}},
@@ -57,7 +60,9 @@ function BuildAboutPanel(contentArea)
         local fs = scrollContent:CreateFontString(nil, "OVERLAY")
         fs:SetFont("Fonts\\FRIZQT__.TTF", line.size or 12, "")
         fs:SetPoint("TOPLEFT", scrollContent, "TOPLEFT", 10, yOff)
-        fs:SetWidth(W - 24) ; fs:SetJustifyH("LEFT") ; fs:SetWordWrap(true)
+        fs:SetPoint("LEFT",  panel, "LEFT",  WSID_PAD + 12, 0)
+        fs:SetPoint("RIGHT", panel, "RIGHT", -WSID_PAD, 0)
+        fs:SetJustifyH("LEFT") ; fs:SetWordWrap(true)
         fs:SetText(line.text)
         if line.color then fs:SetTextColor(line.color[1], line.color[2], line.color[3])
         else fs:SetTextColor(C.dim_text[1], C.dim_text[2], C.dim_text[3]) end

@@ -3,9 +3,7 @@
 
 function BuildLevelingPanel(contentArea)
     local panel = MakePanel(contentArea)
-    local W = WSID_CONT_W
-
-    local hdr = MakeHeader(panel, "Leveling Wheel", W)
+    local hdr = MakeHeader(panel, "Leveling Wheel")
     hdr:SetPoint("TOPLEFT", panel, "TOPLEFT", WSID_PAD, -WSID_PAD)
 
     local desc = MakeDimLabel(panel, "Spin a class -> pick a character -> spin an expansion.", hdr, "BOTTOMLEFT", 4, -8)
@@ -34,30 +32,35 @@ function BuildLevelingPanel(contentArea)
         end
     end)
 
-    local classBox, classLabel = MakeResult(panel, W, 52, "CLASS")
+    local classBox, classLabel = MakeResult(panel, nil, 52, "CLASS")
     classBox:SetPoint("TOPLEFT", autoPickLbl, "BOTTOMLEFT", 0, -10)
     classLabel:SetText("Class")
 
-    local spinClassBtn = MakeBtn(panel, "Spin Class", W, 30)
-    spinClassBtn:SetPoint("TOPLEFT", classBox, "BOTTOMLEFT", 0, -10)
+    local spinClassBtn = MakeBtn(panel, "Spin Class", nil, 30)
+    spinClassBtn:SetPoint("TOP", classBox, "BOTTOM", 0, -10)
+    spinClassBtn:SetPoint("LEFT",    panel, "LEFT",  WSID_PAD, 0)
+    spinClassBtn:SetPoint("RIGHT",   panel, "RIGHT", -WSID_PAD, 0)
 
-    local charHdr = MakeHeader(panel, "Characters of that class  (click to select)", W)
+    local charHdr = MakeHeader(panel, "Characters of that class  (click to select)")
     charHdr:SetPoint("TOPLEFT", spinClassBtn, "BOTTOMLEFT", 0, -10)
 
-    local listBG, listContent, listReset = MakeScrollBox(panel, W, 110)
+    local listBG, listContent, listReset = MakeScrollBox(panel, nil, 110)
     listBG:SetPoint("TOPLEFT", charHdr, "BOTTOMLEFT", 0, 0)
 
-    local expBox, expLabel = MakeResult(panel, W, 52, "EXPANSION")
+    local expBox, expLabel = MakeResult(panel, nil, 52, "EXPANSION")
     expBox:SetPoint("TOPLEFT", listBG, "BOTTOMLEFT", 0, -10)
     expLabel:SetText("Expansion")
 
-    local halfW = math.floor((W-6)/2)
-    local spinExpBtn = MakeBtn(panel, "Spin Expansion", halfW, 30)
-    spinExpBtn:SetPoint("TOPLEFT", expBox, "BOTTOMLEFT", 0, -10)
+    local spinExpBtn = MakeBtn(panel, "Spin Expansion", nil, 30)
+    spinExpBtn:SetPoint("TOP", expBox, "BOTTOM", 0, -10)
+    spinExpBtn:SetPoint("LEFT",    panel, "LEFT",  WSID_PAD, 0)
+    spinExpBtn:SetPoint("RIGHT",   panel, "CENTER", -3, 0)
     spinExpBtn:SetEnabled(false)
 
-    local spinAllBtn = MakeBtn(panel, "Spin All Steps", halfW, 30)
-    spinAllBtn:SetPoint("TOPLEFT", expBox, "BOTTOMLEFT", halfW+6, -10)
+    local spinAllBtn = MakeBtn(panel, "Spin All Steps", nil, 30)
+    spinAllBtn:SetPoint("TOP", expBox, "BOTTOM", 0, -10)
+    spinAllBtn:SetPoint("LEFT",    panel, "CENTER", 3, 0)
+    spinAllBtn:SetPoint("RIGHT",   panel, "RIGHT", -WSID_PAD, 0)
 
     local noteLbl = panel:CreateFontString(nil,"OVERLAY","GameFontNormalSmall")
     noteLbl:SetPoint("TOPLEFT", spinExpBtn, "BOTTOMLEFT", 0, -10)
@@ -90,8 +93,10 @@ function BuildLevelingPanel(contentArea)
         for i,ch in ipairs(matches) do
             local even=(i%2==0)
             local row=CreateFrame("Button",nil,listContent)
-            row:SetSize(W-2, 24)
-            row:SetPoint("TOPLEFT",listContent,"TOPLEFT",0,-(i-1)*24)
+            row:SetHeight(24)
+            row:SetPoint("TOP",   listContent, "TOP",   0, -(i-1)*24)
+            row:SetPoint("LEFT",  listContent, "LEFT",  0, 0)
+            row:SetPoint("RIGHT", listContent, "RIGHT", 0, 0)
             local rowBg=row:CreateTexture(nil,"BACKGROUND") ; rowBg:SetAllPoints()
             rowBg:SetColorTexture(even and C.row_even[1] or C.row_odd[1],
                                   even and C.row_even[2] or C.row_odd[2],
@@ -384,5 +389,4 @@ end
 ------------------------------------------------------------------------
 -- NAME GENERATOR PANEL
 ------------------------------------------------------------------------
-
 

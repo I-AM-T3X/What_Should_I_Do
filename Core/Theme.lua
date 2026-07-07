@@ -172,7 +172,11 @@ end
 
 function MakeScrollBox(parent, w, h)
     local bg = CreateFrame("Frame", nil, parent, "BackdropTemplate")
-    bg:SetSize(w, h)
+    bg:SetHeight(h)
+    if w then bg:SetWidth(w) else
+        bg:SetPoint("LEFT",  parent, "LEFT",  WSID_PAD, 0)
+        bg:SetPoint("RIGHT", parent, "RIGHT", -WSID_PAD, 0)
+    end
     BgBorder(bg, C.row_even[1],C.row_even[2],C.row_even[3],
                  C.divider[1], C.divider[2], C.divider[3])
     local clip = CreateFrame("Frame", nil, bg)
@@ -180,7 +184,14 @@ function MakeScrollBox(parent, w, h)
     clip:SetPoint("BOTTOMRIGHT", bg, "BOTTOMRIGHT", -1, 1)
     clip:SetClipsChildren(true)
     local content = CreateFrame("Frame", nil, clip)
-    content:SetWidth(w-2) ; content:SetHeight(h)
+    if w then
+        content:SetWidth(w-2)
+    else
+        -- Stretch content to clip width dynamically
+        content:SetPoint("LEFT",  clip, "LEFT",  0, 0)
+        content:SetPoint("RIGHT", clip, "RIGHT", 0, 0)
+    end
+    content:SetHeight(h)
     content:SetPoint("TOPLEFT", clip, "TOPLEFT", 0, 0)
     local scrollOff = 0
     local function Clamp(v,lo,hi) return math.max(lo,math.min(hi,v)) end
@@ -202,7 +213,13 @@ end
 
 function MakeResult(parent, w, h, tagText)
     local f = CreateFrame("Frame", nil, parent, "BackdropTemplate")
-    f:SetSize(w, h or 52)
+    f:SetHeight(h or 52)
+    -- If w is a number use fixed size; if nil stretch to parent
+    if w then f:SetWidth(w) else
+        -- caller sets TOPLEFT; we add LEFT+RIGHT for stretch
+        f:SetPoint("LEFT",  parent, "LEFT",  WSID_PAD, 0)
+        f:SetPoint("RIGHT", parent, "RIGHT", -WSID_PAD, 0)
+    end
     BgBorder(f, C.result_bg[1],C.result_bg[2],C.result_bg[3],
                 C.result_bdr[1],C.result_bdr[2],C.result_bdr[3])
     if tagText then
@@ -214,14 +231,18 @@ function MakeResult(parent, w, h, tagText)
     local lbl = f:CreateFontString(nil,"OVERLAY")
     lbl:SetFont("Fonts\\FRIZQT__.TTF", 17, "")
     lbl:SetPoint("CENTER", f, "CENTER", 0, tagText and -4 or 0)
-    lbl:SetWidth(w-20) ; lbl:SetJustifyH("CENTER") ; lbl:SetWordWrap(false)
+    lbl:SetPoint("LEFT",  f, "LEFT",  10, 0)
+    lbl:SetPoint("RIGHT", f, "RIGHT", -10, 0)
+    lbl:SetJustifyH("CENTER") ; lbl:SetWordWrap(false)
     lbl:SetText("--") ; lbl:SetTextColor(C.dim_text[1],C.dim_text[2],C.dim_text[3])
     return f, lbl
 end
 
 function MakeBtn(parent, text, w, h)
     local b = CreateFrame("Button", nil, parent, "BackdropTemplate")
-    b:SetSize(w, h or 30)
+    b:SetHeight(h or 30)
+    if w then b:SetWidth(w) end
+    -- RIGHT anchor set by caller when w is nil
     BgBorder(b, C.btn_bg[1],C.btn_bg[2],C.btn_bg[3], C.btn_bdr[1],C.btn_bdr[2],C.btn_bdr[3])
     local lbl = b:CreateFontString(nil,"OVERLAY","GameFontNormalSmall")
     lbl:SetAllPoints() ; lbl:SetJustifyH("CENTER")
@@ -258,7 +279,11 @@ end
 
 function MakeHeader(parent, text, w)
     local f = CreateFrame("Frame", nil, parent, "BackdropTemplate")
-    f:SetSize(w, 28)
+    f:SetHeight(28)
+    if w then f:SetWidth(w) else
+        f:SetPoint("LEFT",  parent, "LEFT",  WSID_PAD, 0)
+        f:SetPoint("RIGHT", parent, "RIGHT", -WSID_PAD, 0)
+    end
     BgBorder(f, C.header_bg[1],C.header_bg[2],C.header_bg[3], C.divider[1],C.divider[2],C.divider[3])
     local stripe = f:CreateTexture(nil,"ARTWORK")
     stripe:SetColorTexture(C.nav_border[1],C.nav_border[2],C.nav_border[3],1)

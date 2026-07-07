@@ -3,9 +3,7 @@
 
 function BuildRaidDungeonPanel(contentArea)
     local panel = MakePanel(contentArea)
-    local W = WSID_CONT_W
-
-    local hdr = MakeHeader(panel, "Raids & Dungeons", W)
+    local hdr = MakeHeader(panel, "Raids & Dungeons")
     hdr:SetPoint("TOPLEFT", panel, "TOPLEFT", WSID_PAD, -WSID_PAD)
 
     local desc = MakeDimLabel(panel, "Choose Raids or Dungeons, spin an expansion, then spin a random instance.", hdr, "BOTTOMLEFT", 4, -8)
@@ -41,34 +39,40 @@ function BuildRaidDungeonPanel(contentArea)
     modeBtns[1]._lbl:SetTextColor(1,1,1)
 
     -- Expansion result
-    local expBox, expLabel = MakeResult(panel, W, 52, "EXPANSION")
+    local expBox, expLabel = MakeResult(panel, nil, 52, "EXPANSION")
     expBox:SetPoint("TOPLEFT", modeLbl, "BOTTOMLEFT", 0, -12)
     expLabel:SetText("Expansion")
 
     -- Instance result
-    local instBox, instLabel = MakeResult(panel, W, 52, "RAID / DUNGEON")
+    local instBox, instLabel = MakeResult(panel, nil, 52, "RAID / DUNGEON")
     instBox:SetPoint("TOPLEFT", expBox, "BOTTOMLEFT", 0, -8)
     instLabel:SetText("--")
 
     -- Spin buttons
-    local halfW = math.floor((W-6)/2)
-    local spinExpBtn = MakeBtn(panel, "Spin Expansion", halfW, 30)
-    spinExpBtn:SetPoint("TOPLEFT", instBox, "BOTTOMLEFT", 0, -10)
+    local spinExpBtn = MakeBtn(panel, "Spin Expansion", nil, 30)
+    spinExpBtn:SetPoint("TOP", instBox, "BOTTOM", 0, -10)
+    spinExpBtn:SetPoint("LEFT",    panel, "LEFT",  WSID_PAD, 0)
+    spinExpBtn:SetPoint("RIGHT",   panel, "CENTER", -3, 0)
 
-    local spinInstBtn = MakeBtn(panel, "Spin Instance", halfW, 30)
-    spinInstBtn:SetPoint("TOPLEFT", instBox, "BOTTOMLEFT", halfW+6, -10)
+    local spinInstBtn = MakeBtn(panel, "Spin Instance", nil, 30)
+    spinInstBtn:SetPoint("TOP", instBox, "BOTTOM", 0, -10)
+    spinInstBtn:SetPoint("LEFT",    panel, "CENTER", 3, 0)
+    spinInstBtn:SetPoint("RIGHT",   panel, "RIGHT", -WSID_PAD, 0)
     spinInstBtn:SetEnabled(false)
 
-    local spinBothBtn = MakeBtn(panel, "Spin Both", W, 30)
-    spinBothBtn:SetPoint("TOPLEFT", spinExpBtn, "BOTTOMLEFT", 0, -6)
+    local spinBothBtn = MakeBtn(panel, "Spin Both", nil, 30)
+    spinBothBtn:SetPoint("TOP", spinExpBtn, "BOTTOM", 0, -6)
+    spinBothBtn:SetPoint("LEFT",    panel, "LEFT",  WSID_PAD, 0)
+    spinBothBtn:SetPoint("RIGHT",   panel, "RIGHT", -WSID_PAD, 0)
 
     local pickedExp = nil
 
     local function GetExpansionList()
         local pool = {}
         local src = mode == "Raids" and WSID_RAIDS_BY_EXPANSION or WSID_DUNGEONS_BY_EXPANSION
+        local excluded = WhatShouldIDoDB and WhatShouldIDoDB.excludedExpansions or {}
         for exp, instances in pairs(src) do
-            if #instances > 0 then table.insert(pool, exp) end
+            if #instances > 0 and not excluded[exp] then table.insert(pool, exp) end
         end
         -- Sort chronologically
         local ORDER = {"Classic","The Burning Crusade","Wrath of the Lich King","Cataclysm","Mists of Pandaria","Warlords of Draenor","Legion","Battle for Azeroth","Shadowlands","Dragonflight","The War Within","Midnight"}
@@ -137,5 +141,4 @@ function BuildRaidDungeonPanel(contentArea)
 
     return panel
 end
-
 

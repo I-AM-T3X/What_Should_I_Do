@@ -121,6 +121,10 @@ initFrame:SetScript("OnEvent",function(self,event,arg1)
         -- ESC closes the windows
         tinsert(UISpecialFrames, "WhatShouldIDoFrame")
         tinsert(UISpecialFrames, "WhatShouldIDoSettings")
+        -- Apply saved UI scale
+        local scale = WhatShouldIDoDB.uiScale or 1.0
+        mainFrame:SetScale(scale)
+        settingsFrame:SetScale(scale)
     elseif event=="PLAYER_LOGIN" then
         if WhatShouldIDoDB then BuildRoster() end
     end

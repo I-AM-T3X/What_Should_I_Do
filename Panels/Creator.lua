@@ -3,18 +3,16 @@
 
 function BuildCreatorPanel(contentArea)
     local panel = MakePanel(contentArea)
-    local W = WSID_CONT_W
-
-    local hdr = MakeHeader(panel, "Character Creator", W)
+    local hdr = MakeHeader(panel, "Character Creator")
     hdr:SetPoint("TOPLEFT", panel, "TOPLEFT", WSID_PAD, -WSID_PAD)
 
     local desc = MakeDimLabel(panel, "Spin a random valid Race + Class combo for a new character.", hdr, "BOTTOMLEFT", 4, -8)
 
-    local raceBox, raceLabel = MakeResult(panel, W, 52, "RACE")
+    local raceBox, raceLabel = MakeResult(panel, nil, 52, "RACE")
     raceBox:SetPoint("TOPLEFT", desc, "BOTTOMLEFT", -4, -12)
     raceLabel:SetText("Race")
 
-    local classBox, classLabel = MakeResult(panel, W, 52, "CLASS")
+    local classBox, classLabel = MakeResult(panel, nil, 52, "CLASS")
     classBox:SetPoint("TOPLEFT", raceBox, "BOTTOMLEFT", 0, -10)
     classLabel:SetText("Class")
 
@@ -59,16 +57,21 @@ function BuildCreatorPanel(contentArea)
     filterBtns[1]:SetBackdropBorderColor(C.nav_border[1],C.nav_border[2],C.nav_border[3],1)
     filterBtns[1]._lbl:SetTextColor(1,1,1)
 
-    local halfW = math.floor((W-6)/2)
-    local spinRaceBtn = MakeBtn(panel, "Spin Race", halfW, 30)
-    spinRaceBtn:SetPoint("TOPLEFT", filterLbl, "BOTTOMLEFT", 0, -10)
+    local spinRaceBtn = MakeBtn(panel, "Spin Race", nil, 30)
+    spinRaceBtn:SetPoint("TOP", filterLbl, "BOTTOM", 0, -10)
+    spinRaceBtn:SetPoint("LEFT",    panel, "LEFT",  WSID_PAD, 0)
+    spinRaceBtn:SetPoint("RIGHT",   panel, "CENTER", -3, 0)
 
-    local spinClassBtn = MakeBtn(panel, "Spin Class", halfW, 30)
-    spinClassBtn:SetPoint("TOPLEFT", filterLbl, "BOTTOMLEFT", halfW+6, -10)
+    local spinClassBtn = MakeBtn(panel, "Spin Class", nil, 30)
+    spinClassBtn:SetPoint("TOP", filterLbl, "BOTTOM", 0, -10)
+    spinClassBtn:SetPoint("LEFT",    panel, "CENTER", 3, 0)
+    spinClassBtn:SetPoint("RIGHT",   panel, "RIGHT", -WSID_PAD, 0)
     spinClassBtn:SetEnabled(false)
 
-    local spinBothBtn = MakeBtn(panel, "Spin Both", W, 30)
-    spinBothBtn:SetPoint("TOPLEFT", spinRaceBtn, "BOTTOMLEFT", 0, -6)
+    local spinBothBtn = MakeBtn(panel, "Spin Both", nil, 30)
+    spinBothBtn:SetPoint("TOP", spinRaceBtn, "BOTTOM", 0, -6)
+    spinBothBtn:SetPoint("LEFT",    panel, "LEFT",  WSID_PAD, 0)
+    spinBothBtn:SetPoint("RIGHT",   panel, "RIGHT", -WSID_PAD, 0)
 
     local pickedRace = nil
 
@@ -150,5 +153,4 @@ end
 --   WSID_PAD(16)+hdr(28)+gap(10)+desc(14)+gap(12)+classBox(52)+gap(10)+spinBtn(30)
 --   +gap(10)+charHdr(28)+charList(110)+gap(10)+expBox(52)+gap(10)
 --   +btnRow(30)+gap(8)+note(14)+WSID_PAD(16) = 460px  fits cleanly
-
 

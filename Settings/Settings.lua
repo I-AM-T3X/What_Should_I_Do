@@ -56,7 +56,10 @@ function BuildSettingsWindow()
     local rostPanel=CreateFrame("Frame",nil,content) ; rostPanel:SetAllPoints(content) ; rostPanel:Hide()
     local ioPanel=CreateFrame("Frame",nil,content)   ; ioPanel:SetAllPoints(content)   ; ioPanel:Hide()
     local colorsPanel=CreateFrame("Frame",nil,content) ; colorsPanel:SetAllPoints(content) ; colorsPanel:Hide()
-    local PANELS={activities=actPanel,WSID_Roster=rostPanel,importexport=ioPanel,colors=colorsPanel}
+    local scalePanel=CreateFrame("Frame",nil,content)  ; scalePanel:SetAllPoints(content)  ; scalePanel:Hide()
+    local expExclPanel=CreateFrame("Frame",nil,content)    ; expExclPanel:SetAllPoints(content)    ; expExclPanel:Hide()
+    local changelogPanel=CreateFrame("Frame",nil,content)  ; changelogPanel:SetAllPoints(content)  ; changelogPanel:Hide()
+    local PANELS={activities=actPanel,WSID_Roster=rostPanel,importexport=ioPanel,expansions=expExclPanel,colors=colorsPanel,uiscale=scalePanel,changelog=changelogPanel}
     local navBtns={} ; local navActive=nil
 
     local function SetNavActive(name)
@@ -70,7 +73,7 @@ function BuildSettingsWindow()
         if name=="WSID_Roster"     and WSID_refreshRoster     then WSID_refreshRoster() end
     end
 
-    for i,def in ipairs({{name="activities",label="Activities"},{name="WSID_Roster",label="Roster"},{name="importexport",label="Import/Export"},{name="colors",label="Colors"}}) do
+    for i,def in ipairs({{name="activities",label="Activities"},{name="WSID_Roster",label="Roster"},{name="importexport",label="Import/Export"},{name="expansions",label="Expansions"},{name="colors",label="Colors"},{name="uiscale",label="UI Scale"}}) do
         local row=CreateFrame("Button",nil,navBg) ; row:SetSize(WSID_SET_NAV,36)
         row:SetPoint("TOPLEFT",navBg,"TOPLEFT",0,-(i-1)*36)
         local bg=row:CreateTexture(nil,"BACKGROUND") ; bg:SetAllPoints() ; bg:SetColorTexture(0,0,0,0)
@@ -86,6 +89,56 @@ function BuildSettingsWindow()
         row:SetScript("OnLeave",function() if navActive~=name then bg:SetColorTexture(0,0,0,0) ; lbl:SetTextColor(C.dim_text[1],C.dim_text[2],C.dim_text[3]) end end)
         navBtns[def.name]={bg=bg,stripe=stripe,lbl=lbl}
     end
+
+    -- Reset window size button at bottom of nav
+    -- Changelog button above separator
+    local clNavBtn = CreateFrame("Button", nil, navBg)
+    clNavBtn:SetSize(WSID_SET_NAV, 36)
+    clNavBtn:SetPoint("BOTTOMLEFT", navBg, "BOTTOMLEFT", 0, 36)
+    local clNavBg = clNavBtn:CreateTexture(nil,"BACKGROUND") ; clNavBg:SetAllPoints() ; clNavBg:SetColorTexture(0,0,0,0)
+    local clNavStripe = clNavBtn:CreateTexture(nil,"ARTWORK")
+    clNavStripe:SetColorTexture(C.nav_border[1],C.nav_border[2],C.nav_border[3],1)
+    clNavStripe:SetSize(3,36) ; clNavStripe:SetPoint("LEFT",clNavBtn,"LEFT",0,0) ; clNavStripe:Hide()
+    local clNavLbl = clNavBtn:CreateFontString(nil,"OVERLAY","GameFontNormalSmall")
+    clNavLbl:SetPoint("LEFT",clNavBtn,"LEFT",12,0) ; clNavLbl:SetText("Changelog")
+    clNavLbl:SetTextColor(C.dim_text[1],C.dim_text[2],C.dim_text[3])
+    clNavBtn:SetScript("OnClick", function() SetNavActive("changelog") end)
+    clNavBtn:SetScript("OnEnter", function()
+        if navActive~="changelog" then clNavBg:SetColorTexture(C.nav_hover[1],C.nav_hover[2],C.nav_hover[3],1) ; clNavLbl:SetTextColor(C.bright_text[1],C.bright_text[2],C.bright_text[3]) end
+    end)
+    clNavBtn:SetScript("OnLeave", function()
+        if navActive~="changelog" then clNavBg:SetColorTexture(0,0,0,0) ; clNavLbl:SetTextColor(C.dim_text[1],C.dim_text[2],C.dim_text[3]) end
+    end)
+    navBtns["changelog"] = {bg=clNavBg, stripe=clNavStripe, lbl=clNavLbl}
+
+    local resetSizeRule = navBg:CreateTexture(nil,"ARTWORK")
+    resetSizeRule:SetColorTexture(C.divider[1],C.divider[2],C.divider[3],1) ; resetSizeRule:SetHeight(1)
+    resetSizeRule:SetPoint("BOTTOMLEFT",  navBg, "BOTTOMLEFT",  0, 72)
+    resetSizeRule:SetPoint("BOTTOMRIGHT", navBg, "BOTTOMRIGHT", 0, 72)
+
+    local resetSizeBtn = CreateFrame("Button", nil, navBg)
+    resetSizeBtn:SetSize(WSID_SET_NAV, 36)
+    resetSizeBtn:SetPoint("BOTTOMLEFT", navBg, "BOTTOMLEFT", 0, 0)
+    local rsBg = resetSizeBtn:CreateTexture(nil,"BACKGROUND") ; rsBg:SetAllPoints() ; rsBg:SetColorTexture(0,0,0,0)
+    local rsLbl = resetSizeBtn:CreateFontString(nil,"OVERLAY","GameFontNormalSmall")
+    rsLbl:SetPoint("LEFT", resetSizeBtn, "LEFT", 12, 0)
+    rsLbl:SetText("Reset Size")
+    rsLbl:SetTextColor(C.dim_text[1],C.dim_text[2],C.dim_text[3])
+    resetSizeBtn:SetScript("OnEnter", function()
+        rsBg:SetColorTexture(C.nav_hover[1],C.nav_hover[2],C.nav_hover[3],1)
+        rsLbl:SetTextColor(C.bright_text[1],C.bright_text[2],C.bright_text[3])
+    end)
+    resetSizeBtn:SetScript("OnLeave", function()
+        rsBg:SetColorTexture(0,0,0,0)
+        rsLbl:SetTextColor(C.dim_text[1],C.dim_text[2],C.dim_text[3])
+    end)
+    resetSizeBtn:SetScript("OnClick", function()
+        WhatShouldIDoDB.uiScale = 1.0
+        WhatShouldIDoDB.uiScale = 1.0
+        if mainFrame     then mainFrame:SetScale(1.0) end
+        if settingsFrame then settingsFrame:SetScale(1.0) end
+        UIErrorsFrame:AddMessage("|cffd5a742What Should I Do?:|r UI scale reset to 100%%.", 1, 0.85, 0.2)
+    end)
 
     --------------------------------------------------------------------
     -- ACTIVITIES PANEL: two columns
@@ -358,6 +411,13 @@ function BuildSettingsWindow()
     -- IMPORT / EXPORT PANEL
     --------------------------------------------------------------------
 
+    local ioNoteBg = ioPanel:CreateFontString(nil,"OVERLAY","GameFontNormalSmall")
+    ioNoteBg:SetPoint("TOPLEFT", ioPanel, "TOPLEFT", WSID_SET_PAD, -WSID_SET_PAD)
+    ioNoteBg:SetPoint("RIGHT",   ioPanel, "RIGHT",  -WSID_SET_PAD, 0)
+    ioNoteBg:SetJustifyH("LEFT") ; ioNoteBg:SetWordWrap(true)
+    ioNoteBg:SetTextColor(C.dim_text[1],C.dim_text[2],C.dim_text[3])
+    ioNoteBg:SetText("|cffd5a742For multi-account players:|r Export your roster on one account, then import it on another. This lets the Leveling wheel see characters from all your accounts in one place.")
+
     -- Encode tables (no collisions between CLASS/RACE/FACT within same field)
     local CLASS_ENC = {
         ["Warrior"]="Wa",["Paladin"]="Pa",["Hunter"]="Hu",["Rogue"]="Ro",
@@ -400,7 +460,7 @@ function BuildSettingsWindow()
 
     -- EXPORT section
     local expHdr = MakeHeader(ioPanel, "Export Roster", WSID_SET_CW)
-    expHdr:SetPoint("TOPLEFT", ioPanel, "TOPLEFT", WSID_SET_PAD, -WSID_SET_PAD)
+    expHdr:SetPoint("TOPLEFT", ioNoteBg, "BOTTOMLEFT", -4, -10)
 
     local expBoxBg = CreateFrame("Frame", nil, ioPanel, "BackdropTemplate")
     expBoxBg:SetSize(WSID_SET_CW, 54)
@@ -617,6 +677,7 @@ function BuildSettingsWindow()
     local colScrollBG, colScrollContent, _ = MakeScrollBox(colorsPanel, WSID_SET_CW, WSID_SET_H - 30 - WSID_SET_PAD * 2)
     colScrollBG:SetPoint("TOPLEFT", colorsPanel, "TOPLEFT", WSID_SET_PAD, -WSID_SET_PAD)
 
+    -- COLOR THEME
     local colHdr = MakeHeader(colScrollContent, "Color Theme", WSID_SET_CW - 4)
     colHdr:SetPoint("TOPLEFT", colScrollContent, "TOPLEFT", 0, -4)
 
@@ -806,6 +867,257 @@ function BuildSettingsWindow()
 
     -- Set scroll content height
     colScrollContent:SetHeight(680)
+
+    --------------------------------------------------------------------
+    -- EXPANSIONS PANEL
+    --------------------------------------------------------------------
+
+    local expExclHdr = MakeHeader(expExclPanel, "Raid & Dungeon Expansions", WSID_SET_CW)
+    expExclHdr:SetPoint("TOPLEFT", expExclPanel, "TOPLEFT", WSID_SET_PAD, -WSID_SET_PAD)
+
+    local expExclDesc = expExclPanel:CreateFontString(nil,"OVERLAY","GameFontNormalSmall")
+    expExclDesc:SetPoint("TOPLEFT", expExclHdr, "BOTTOMLEFT", 4, -6)
+    expExclDesc:SetTextColor(C.dim_text[1],C.dim_text[2],C.dim_text[3])
+    expExclDesc:SetText("Uncheck an expansion to exclude it from the Raids & Dungeons spinner.")
+    expExclDesc:SetWidth(WSID_SET_CW - 8)
+
+    local expExclScrollBG, expExclContent, _ = MakeScrollBox(expExclPanel, WSID_SET_CW, WSID_SET_H - 160)
+    expExclScrollBG:SetPoint("TOPLEFT", expExclDesc, "BOTTOMLEFT", -4, -8)
+
+    local ORDER = {"Classic","The Burning Crusade","Wrath of the Lich King","Cataclysm","Mists of Pandaria","Warlords of Draenor","Legion","Battle for Azeroth","Shadowlands","Dragonflight","The War Within","Midnight"}
+
+    local ROW_H = 28
+
+    local COL_W = math.floor(WSID_SET_CW / 2) - 2
+
+    local function MakeExpRow(i, exp)
+        local col = (i-1) % 2        -- 0 = left, 1 = right
+        local rowIdx = math.floor((i-1) / 2)
+        local even = (rowIdx%2==0)
+        local row = CreateFrame("Button", nil, expExclContent, "BackdropTemplate")
+        row:SetSize(COL_W, ROW_H)
+        row:SetPoint("TOPLEFT", expExclContent, "TOPLEFT", col*(COL_W+4), -rowIdx*ROW_H)
+        row:SetBackdrop({bgFile="Interface\\Buttons\\WHITE8x8"})
+        row:SetBackdropColor(even and C.row_even[1] or C.row_odd[1],
+                             even and C.row_even[2] or C.row_odd[2],
+                             even and C.row_even[3] or C.row_odd[3], 1)
+
+        -- Custom checkbox box
+        local box = CreateFrame("Frame", nil, row, "BackdropTemplate")
+        box:SetSize(14, 14)
+        box:SetPoint("LEFT", row, "LEFT", 10, 0)
+        box:SetBackdrop({bgFile="Interface\\Buttons\\WHITE8x8",edgeFile="Interface\\Buttons\\WHITE8x8",edgeSize=1})
+
+        -- Checkmark texture
+        local check = box:CreateTexture(nil, "OVERLAY")
+        check:SetTexture("Interface\\Buttons\\UI-CheckBox-Check")
+        check:SetSize(16, 16)
+        check:SetPoint("CENTER", box, "CENTER", 0, 0)
+
+        -- Label
+        local lbl = row:CreateFontString(nil,"OVERLAY","GameFontNormalSmall")
+        lbl:SetPoint("LEFT", box, "RIGHT", 8, 0)
+
+        local expName = exp
+        local checked = not (WhatShouldIDoDB.excludedExpansions and WhatShouldIDoDB.excludedExpansions[expName])
+
+        local function SetState(isChecked)
+            checked = isChecked
+            -- Use C table if populated, else hardcoded defaults
+            local ac1,ac2,ac3   = C.accent     and C.accent[1]      or 0.84, C.accent     and C.accent[2]      or 0.67, C.accent     and C.accent[3]      or 0.20
+            local rb1,rb2,rb3   = C.result_bg  and C.result_bg[1]   or 0.06, C.result_bg  and C.result_bg[2]   or 0.04, C.result_bg  and C.result_bg[3]   or 0.10
+            local di1,di2,di3   = C.divider    and C.divider[1]     or 0.25, C.divider    and C.divider[2]     or 0.20, C.divider    and C.divider[3]     or 0.35
+            local br1,br2,br3   = C.bright_text and C.bright_text[1] or 1.00, C.bright_text and C.bright_text[2] or 0.90, C.bright_text and C.bright_text[3] or 0.40
+            local dm1,dm2,dm3   = C.dim_text   and C.dim_text[1]    or 0.50, C.dim_text   and C.dim_text[2]    or 0.45, C.dim_text   and C.dim_text[3]    or 0.55
+            if isChecked then
+                box:SetBackdropColor(rb1,rb2,rb3,1)
+                box:SetBackdropBorderColor(ac1,ac2,ac3,1)
+                check:SetVertexColor(ac1,ac2,ac3,1)
+                check:Show()
+                lbl:SetTextColor(br1,br2,br3)
+            else
+                box:SetBackdropColor(0.05,0.03,0.08,1)
+                box:SetBackdropBorderColor(di1,di2,di3,1)
+                check:Hide()
+                lbl:SetTextColor(dm1,dm2,dm3)
+            end
+        end
+
+        lbl:SetText(expName)
+        SetState(checked)
+
+        row:SetScript("OnClick", function()
+            if not WhatShouldIDoDB.excludedExpansions then WhatShouldIDoDB.excludedExpansions = {} end
+            checked = not checked
+            if checked then
+                WhatShouldIDoDB.excludedExpansions[expName] = nil
+            else
+                WhatShouldIDoDB.excludedExpansions[expName] = true
+            end
+            SetState(checked)
+        end)
+        row:SetScript("OnEnter", function()
+            row:SetBackdropColor(C.row_hover[1],C.row_hover[2],C.row_hover[3],1)
+        end)
+        local re,rg,rb = even and C.row_even[1] or C.row_odd[1], even and C.row_even[2] or C.row_odd[2], even and C.row_even[3] or C.row_odd[3]
+        row:SetBackdropColor(re,rg,rb,1)
+        row:SetScript("OnLeave", function() row:SetBackdropColor(re,rg,rb,1) end)
+
+        return row, SetState
+    end
+
+    local expRows = {}
+    for i, exp in ipairs(ORDER) do
+        local row, setState = MakeExpRow(i, exp)
+        expRows[exp] = setState
+    end
+    expExclContent:SetHeight(math.ceil(#ORDER / 2) * ROW_H)
+
+    -- Enable All / Disable All buttons
+    local expEnableAllBtn = MakeBtn(expExclPanel, "Enable All", math.floor(WSID_SET_CW/2) - 3, 24)
+    expEnableAllBtn:SetPoint("BOTTOMLEFT", expExclPanel, "BOTTOMLEFT", WSID_SET_PAD, WSID_SET_PAD)
+    expEnableAllBtn:SetScript("OnClick", function()
+        if WhatShouldIDoDB.excludedExpansions then wipe(WhatShouldIDoDB.excludedExpansions) end
+        for _, setState in pairs(expRows) do setState(true) end
+    end)
+
+    local expDisableAllBtn = MakeBtn(expExclPanel, "Disable All", math.floor(WSID_SET_CW/2) - 3, 24)
+    expDisableAllBtn:SetPoint("BOTTOMRIGHT", expExclPanel, "BOTTOMRIGHT", -WSID_SET_PAD, WSID_SET_PAD)
+    expDisableAllBtn:SetScript("OnClick", function()
+        if not WhatShouldIDoDB.excludedExpansions then WhatShouldIDoDB.excludedExpansions = {} end
+        for _, exp in ipairs(ORDER) do
+            WhatShouldIDoDB.excludedExpansions[exp] = true
+            if expRows[exp] then expRows[exp](false) end
+        end
+    end)
+
+    --------------------------------------------------------------------
+    -- UI SCALE PANEL
+    --------------------------------------------------------------------
+
+    local scaleHdr = MakeHeader(scalePanel, "UI Scale", WSID_SET_CW)
+    scaleHdr:SetPoint("TOPLEFT", scalePanel, "TOPLEFT", WSID_SET_PAD, -WSID_SET_PAD)
+
+    local scaleDesc = scalePanel:CreateFontString(nil,"OVERLAY","GameFontNormalSmall")
+    scaleDesc:SetPoint("TOPLEFT", scaleHdr, "BOTTOMLEFT", 4, -8)
+    scaleDesc:SetTextColor(C.dim_text[1],C.dim_text[2],C.dim_text[3])
+    scaleDesc:SetText("Scale the addon windows and all text. Changes apply instantly.")
+    scaleDesc:SetWidth(WSID_SET_CW - 8)
+
+    local scaleOptions = {
+        {label="50%",  val=0.50}, {label="60%",  val=0.60}, {label="70%",  val=0.70},
+        {label="80%",  val=0.80}, {label="90%",  val=0.90}, {label="100%", val=1.00},
+        {label="110%", val=1.10}, {label="120%", val=1.20}, {label="130%", val=1.30},
+        {label="140%", val=1.40}, {label="150%", val=1.50}, {label="160%", val=1.60},
+        {label="170%", val=1.70}, {label="180%", val=1.80}, {label="190%", val=1.90},
+        {label="200%", val=2.00},
+    }
+
+    local scaleLbl = scalePanel:CreateFontString(nil,"OVERLAY","GameFontNormalSmall")
+    scaleLbl:SetPoint("TOPLEFT", scaleDesc, "BOTTOMLEFT", 0, -12)
+    scaleLbl:SetTextColor(C.dim_text[1],C.dim_text[2],C.dim_text[3])
+    scaleLbl:SetText("Scale:")
+
+    local scaleBox = CreateFrame("Button", nil, scalePanel, "BackdropTemplate")
+    scaleBox:SetSize(100, 26)
+    scaleBox:SetPoint("LEFT", scaleLbl, "RIGHT", 8, 0)
+    BgBorder(scaleBox, C.result_bg[1],C.result_bg[2],C.result_bg[3], C.result_bdr[1],C.result_bdr[2],C.result_bdr[3])
+    local scaleBoxLbl = scaleBox:CreateFontString(nil,"OVERLAY","GameFontNormalSmall")
+    scaleBoxLbl:SetPoint("LEFT", scaleBox, "LEFT", 8, 0)
+    scaleBoxLbl:SetTextColor(C.bright_text[1],C.bright_text[2],C.bright_text[3])
+    local curScale = WhatShouldIDoDB.uiScale or 1.0
+    scaleBoxLbl:SetText(string.format("%.0f%%", curScale * 100))
+
+    local scaleDropdown = CreateFrame("Frame", nil, scalePanel, "BackdropTemplate")
+    scaleDropdown:SetSize(100, #scaleOptions * 22)
+    scaleDropdown:SetPoint("TOPLEFT", scaleBox, "BOTTOMLEFT", 0, -2)
+    scaleDropdown:SetFrameStrata("TOOLTIP")
+    BgBorder(scaleDropdown, C.bg[1],C.bg[2],C.bg[3], C.win_border[1],C.win_border[2],C.win_border[3])
+    scaleDropdown:Hide()
+
+    local function ApplyScale(val, label)
+        WhatShouldIDoDB.uiScale = val
+        scaleBoxLbl:SetText(label)
+        scaleDropdown:Hide()
+        if mainFrame     then mainFrame:SetScale(val) end
+        if settingsFrame then settingsFrame:SetScale(val) end
+    end
+
+    for i, opt in ipairs(scaleOptions) do
+        local row = CreateFrame("Button", nil, scaleDropdown)
+        row:SetSize(100, 22)
+        row:SetPoint("TOPLEFT", scaleDropdown, "TOPLEFT", 0, -(i-1)*22)
+        local rb = row:CreateTexture(nil,"BACKGROUND") ; rb:SetAllPoints()
+        local isEven = (i%2==0)
+        rb:SetColorTexture(isEven and C.row_even[1] or C.row_odd[1],
+                           isEven and C.row_even[2] or C.row_odd[2],
+                           isEven and C.row_even[3] or C.row_odd[3], 1)
+        local rl = row:CreateFontString(nil,"OVERLAY","GameFontNormalSmall")
+        rl:SetPoint("LEFT", row, "LEFT", 10, 0)
+        if opt.val == 1.0 then
+            rl:SetTextColor(C.bright_text[1],C.bright_text[2],C.bright_text[3])
+        else
+            rl:SetTextColor(C.dim_text[1],C.dim_text[2],C.dim_text[3])
+        end
+        rl:SetText(opt.label)
+        local ov, ol = opt.val, opt.label
+        row:SetScript("OnClick",  function() ApplyScale(ov, ol) end)
+        row:SetScript("OnEnter", function() rb:SetColorTexture(C.row_hover[1],C.row_hover[2],C.row_hover[3],1) end)
+        row:SetScript("OnLeave", function()
+            rb:SetColorTexture(isEven and C.row_even[1] or C.row_odd[1],
+                               isEven and C.row_even[2] or C.row_odd[2],
+                               isEven and C.row_even[3] or C.row_odd[3], 1)
+        end)
+    end
+
+    scaleBox:SetScript("OnClick", function()
+        if scaleDropdown:IsShown() then scaleDropdown:Hide() else scaleDropdown:Show() end
+    end)
+
+    local scaleResetBtn = MakeBtn(scalePanel, "Reset to 100%", 120, 26)
+    scaleResetBtn:SetPoint("TOPLEFT", scaleLbl, "BOTTOMLEFT", 0, -14)
+    scaleResetBtn:SetScript("OnClick", function()
+        ApplyScale(1.0, "100%")
+    end)
+
+    --------------------------------------------------------------------
+    -- CHANGELOG PANEL
+    --------------------------------------------------------------------
+
+    local clScrollBG, clScrollContent, _ = MakeScrollBox(changelogPanel, WSID_SET_CW, WSID_SET_H - 50)
+    clScrollBG:SetPoint("TOPLEFT", changelogPanel, "TOPLEFT", WSID_SET_PAD, -WSID_SET_PAD)
+
+    local yOff = -6
+    for _, block in ipairs(WSID_CHANGELOG) do
+        -- Version header
+        local vHdr = MakeHeader(clScrollContent, "v"..block.version, WSID_SET_CW - 4)
+        vHdr:SetPoint("TOPLEFT", clScrollContent, "TOPLEFT", 0, yOff)
+        yOff = yOff - 34
+
+        for _, entry in ipairs(block.entries) do
+            local isNew = entry.type == "new"
+            -- Tag label
+            local tag = clScrollContent:CreateFontString(nil,"OVERLAY","GameFontNormalSmall")
+            tag:SetPoint("TOPLEFT", clScrollContent, "TOPLEFT", 8, yOff)
+            tag:SetText(isNew and "|cff44cc44[New]|r" or "|cffcc4444[Fix]|r")
+
+            -- Entry text
+            local txt = clScrollContent:CreateFontString(nil,"OVERLAY","GameFontNormalSmall")
+            txt:SetPoint("TOPLEFT", clScrollContent, "TOPLEFT", 52, yOff)
+            txt:SetPoint("RIGHT",   clScrollContent, "RIGHT",  -8, 0)
+            txt:SetJustifyH("LEFT") ; txt:SetWordWrap(true)
+            txt:SetTextColor(C.dim_text[1],C.dim_text[2],C.dim_text[3])
+            txt:SetText(entry.text)
+
+            -- Measure wrapped height (approx 14px per line, min 18)
+            local lineCount = math.max(1, math.ceil(#entry.text / 72))
+            yOff = yOff - (lineCount * 14) - 6
+        end
+
+        yOff = yOff - 10  -- gap between versions
+    end
+
+    clScrollContent:SetHeight(math.abs(yOff) + 20)
 
     f:SetScript("OnShow",function() SetNavActive("activities") end)
     SetNavActive("activities")

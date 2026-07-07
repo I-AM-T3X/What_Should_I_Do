@@ -3,31 +3,34 @@
 
 function BuildActivityPanel(contentArea)
     local panel = MakePanel(contentArea)
-    local W = WSID_CONT_W
-
-    local hdr = MakeHeader(panel, "Activity Wheel", W)
+    local hdr = MakeHeader(panel, "Activity Wheel")
     hdr:SetPoint("TOPLEFT", panel, "TOPLEFT", WSID_PAD, -WSID_PAD)
 
     local desc = MakeDimLabel(panel, "Spin a category, then spin a sub-activity.", hdr, "BOTTOMLEFT", 4, -8)
 
-    local catBox, catLabel = MakeResult(panel, W, 52, "CATEGORY")
+    local catBox, catLabel = MakeResult(panel, nil, 52, "CATEGORY")
     catBox:SetPoint("TOPLEFT", desc, "BOTTOMLEFT", -4, -12)
     catLabel:SetText("Category")
 
-    local subBox, subLabel = MakeResult(panel, W, 52, "SUB-ACTIVITY")
+    local subBox, subLabel = MakeResult(panel, nil, 52, "SUB-ACTIVITY")
     subBox:SetPoint("TOPLEFT", catBox, "BOTTOMLEFT", 0, -10)
     subLabel:SetText("Sub-Activity")
 
-    local halfW = math.floor((W-6)/2)
-    local spinCatBtn = MakeBtn(panel, "Spin Category", halfW, 30)
-    spinCatBtn:SetPoint("TOPLEFT", subBox, "BOTTOMLEFT", 0, -14)
+    local spinCatBtn = MakeBtn(panel, "Spin Category", nil, 30)
+    spinCatBtn:SetPoint("TOP",  subBox, "BOTTOMLEFT",  0, -14)
+    spinCatBtn:SetPoint("LEFT",     panel, "LEFT",  WSID_PAD, 0)
+    spinCatBtn:SetPoint("RIGHT",    panel, "CENTER",       -3, 0)
 
-    local spinSubBtn = MakeBtn(panel, "Spin Sub-Activity", halfW, 30)
-    spinSubBtn:SetPoint("TOPLEFT", subBox, "BOTTOMLEFT", halfW+6, -14)
+    local spinSubBtn = MakeBtn(panel, "Spin Sub-Activity", nil, 30)
+    spinSubBtn:SetPoint("TOP",  subBox, "BOTTOMLEFT",  0, -14)
+    spinSubBtn:SetPoint("LEFT",     panel, "CENTER",        3, 0)
+    spinSubBtn:SetPoint("RIGHT",    panel, "RIGHT",       -WSID_PAD, 0)
     spinSubBtn:SetEnabled(false)
 
-    local spinBothBtn = MakeBtn(panel, "Spin Both", W, 30)
-    spinBothBtn:SetPoint("TOPLEFT", spinCatBtn, "BOTTOMLEFT", 0, -6)
+    local spinBothBtn = MakeBtn(panel, "Spin Both", nil, 30)
+    spinBothBtn:SetPoint("TOP",  spinCatBtn, "BOTTOM", 0, -6)
+    spinBothBtn:SetPoint("LEFT",     panel, "LEFT",  WSID_PAD, 0)
+    spinBothBtn:SetPoint("RIGHT",    panel, "RIGHT", -WSID_PAD, 0)
 
     local lastCat = nil
 
@@ -81,5 +84,4 @@ end
 ------------------------------------------------------------------------
 -- TAB 2: CREATOR
 ------------------------------------------------------------------------
-
 

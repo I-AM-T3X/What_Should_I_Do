@@ -3,8 +3,7 @@
 ## Notes: Spin wheels to help decide what to do in WoW. Features activity, character creator, leveling, name generator, professions, and raids & dungeons spinners.
 ## Author: I_AM_T3X
 ## X-License: GPL-3.0
-## Version: 1.1.0
-## X-License: GPL-3.0
+## Version: 1.2.0
 ## SavedVariables: WhatShouldIDoDB
 
 # Core (load first — constants, theme, helpers, data must precede panels)
@@ -18,6 +17,7 @@ Data\Activities.lua
 Data\Expansions.lua
 Data\Professions.lua
 Data\RaidsDungeons.lua
+Data\Changelog.lua
 Data\Names.lua
 
 # Core continued (Roster needs CLASS_COLORS from Data\Races)

@@ -20,6 +20,9 @@ function InitDB()
     end
     if not WhatShouldIDoDB.seenChars    then WhatShouldIDoDB.seenChars    = {} end
     if not WhatShouldIDoDB.colorTheme   then WhatShouldIDoDB.colorTheme   = "Default" end
+    if not WhatShouldIDoDB.uiScale       then WhatShouldIDoDB.uiScale       = 1.0 end
     if not WhatShouldIDoDB.customColors then WhatShouldIDoDB.customColors = {} end
-    if not WhatShouldIDoDB.excludedChars then WhatShouldIDoDB.excludedChars = {} end
+    if not WhatShouldIDoDB.excludedChars       then WhatShouldIDoDB.excludedChars       = {} end
+    if not WhatShouldIDoDB.excludedExpansions   then WhatShouldIDoDB.excludedExpansions   = {} end
+    if WhatShouldIDoDB.excludeFarming == nil    then WhatShouldIDoDB.excludeFarming       = false end
 end

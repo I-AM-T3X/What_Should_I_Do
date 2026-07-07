@@ -3,9 +3,7 @@
 
 function BuildNamePanel(contentArea)
     local panel = MakePanel(contentArea)
-    local W = WSID_CONT_W
-
-    local hdr = MakeHeader(panel, "Name Generator", W)
+    local hdr = MakeHeader(panel, "Name Generator")
     hdr:SetPoint("TOPLEFT", panel, "TOPLEFT", WSID_PAD, -WSID_PAD)
 
     local desc = MakeDimLabel(panel, "Pick a race and gender to generate a list of names.", hdr, "BOTTOMLEFT", 4, -8)
@@ -107,14 +105,17 @@ function BuildNamePanel(contentArea)
     end)
 
     -- Generate button
-    local generateBtn = MakeBtn(panel, "Generate Names", W, 30)
-    generateBtn:SetPoint("TOPLEFT", raceLabel, "BOTTOMLEFT", 0, -14)
+    local generateBtn = MakeBtn(panel, "Generate Names", nil, 30)
+    generateBtn:SetPoint("TOP",   raceLabel, "BOTTOM",  0, -14)
+    generateBtn:SetPoint("LEFT",  panel, "LEFT",   WSID_PAD, 0)
+    generateBtn:SetPoint("RIGHT", panel, "RIGHT",  -WSID_PAD, 0)
 
     -- Name list scroll
-    local nameHdr = MakeHeader(panel, "Generated Names  (click to copy to chat)", W)
-    nameHdr:SetPoint("TOPLEFT", generateBtn, "BOTTOMLEFT", 0, -10)
+    local nameHdr = MakeHeader(panel, "Generated Names  (click to copy to chat)")
+    nameHdr:SetPoint("TOP",  generateBtn, "BOTTOM", 0, -10)
+    nameHdr:SetPoint("LEFT", panel, "LEFT", WSID_PAD, 0)
 
-    local nameBG, nameContent, nameReset = MakeScrollBox(panel, W, 200)
+    local nameBG, nameContent, nameReset = MakeScrollBox(panel, nil, 200)
     nameBG:SetPoint("TOPLEFT", nameHdr, "BOTTOMLEFT", 0, 0)
 
     local nameRows = {}
@@ -125,8 +126,10 @@ function BuildNamePanel(contentArea)
         for i, name in ipairs(names) do
             local even = (i%2==0)
             local row = CreateFrame("Button", nil, nameContent)
-            row:SetSize(W-2, 26)
-            row:SetPoint("TOPLEFT", nameContent, "TOPLEFT", 0, -(i-1)*26)
+            row:SetHeight(26)
+            row:SetPoint("TOP",   nameContent, "TOP",   0, -(i-1)*26)
+            row:SetPoint("LEFT",  nameContent, "LEFT",  0, 0)
+            row:SetPoint("RIGHT", nameContent, "RIGHT", 0, 0)
             local rb = row:CreateTexture(nil,"BACKGROUND") ; rb:SetAllPoints()
             rb:SetColorTexture(even and C.row_even[1] or C.row_odd[1],
                                even and C.row_even[2] or C.row_odd[2],

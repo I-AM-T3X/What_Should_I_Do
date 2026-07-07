@@ -3,43 +3,95 @@
 
 function BuildProfessionPanel(contentArea)
     local panel = MakePanel(contentArea)
-    local W = WSID_CONT_W
-
-    local hdr = MakeHeader(panel, "Profession Picker", W)
+    local hdr = MakeHeader(panel, "Profession Picker")
     hdr:SetPoint("TOPLEFT", panel, "TOPLEFT", WSID_PAD, -WSID_PAD)
 
     local desc = MakeDimLabel(panel, "Spin two professions for your character.", hdr, "BOTTOMLEFT", 4, -8)
 
-    local halfW = math.floor((W - 10) / 2)
-
-    local prof1Box, prof1Label = MakeResult(panel, halfW, 52, "PROFESSION 1")
-    prof1Box:SetPoint("TOPLEFT", desc, "BOTTOMLEFT", -4, -12)
+    local prof1Box, prof1Label = MakeResult(panel, nil, 52, "PROFESSION 1")
+    prof1Box:SetPoint("TOP", desc, "BOTTOM", 0, -12)
+    prof1Box:SetPoint("LEFT",    panel, "LEFT",  WSID_PAD, 0)
+    prof1Box:SetPoint("RIGHT",   panel, "CENTER", -3, 0)
     prof1Label:SetText("--")
 
-    local prof2Box, prof2Label = MakeResult(panel, halfW, 52, "PROFESSION 2")
-    prof2Box:SetPoint("TOPLEFT", prof1Box, "TOPRIGHT", 10, 0)
+    local prof2Box, prof2Label = MakeResult(panel, nil, 52, "PROFESSION 2")
+    prof2Box:SetPoint("TOP",  desc, "BOTTOM", 0, -12)
+    prof2Box:SetPoint("LEFT",     panel, "CENTER", 3, 0)
+    prof2Box:SetPoint("RIGHT",    panel, "RIGHT", -WSID_PAD, 0)
     prof2Label:SetText("--")
 
-    local spinBtn = MakeBtn(panel, "Spin Professions", W, 30)
-    spinBtn:SetPoint("TOPLEFT", prof1Box, "BOTTOMLEFT", 0, -10)
+    local spinBtn = MakeBtn(panel, "Spin Professions", nil, 30)
+    spinBtn:SetPoint("TOP", prof1Box, "BOTTOM", 0, -10)
+    spinBtn:SetPoint("LEFT",    panel, "LEFT",  WSID_PAD, 0)
+    spinBtn:SetPoint("RIGHT",   panel, "RIGHT", -WSID_PAD, 0)
 
-    local pairNote = panel:CreateFontString(nil,"OVERLAY","GameFontNormalSmall")
-    pairNote:SetPoint("TOPLEFT", spinBtn, "BOTTOMLEFT", 0, -12)
-    pairNote:SetTextColor(C.dim_text[1],C.dim_text[2],C.dim_text[3])
-    pairNote:SetText(" ") ; pairNote:SetWidth(W)
+    -- Exclude farming professions checkbox
+    local FARMING = {Herbalism=true, Mining=true, Skinning=true}
+
+    local farmBox = CreateFrame("Frame", nil, panel, "BackdropTemplate")
+    farmBox:SetSize(14, 14)
+    farmBox:SetPoint("TOPLEFT", spinBtn, "BOTTOMLEFT", 0, -14)
+    farmBox:SetBackdrop({bgFile="Interface\\Buttons\\WHITE8x8",edgeFile="Interface\\Buttons\\WHITE8x8",edgeSize=1})
+
+    local farmCheck = farmBox:CreateTexture(nil,"OVERLAY")
+    farmCheck:SetTexture("Interface\\Buttons\\UI-CheckBox-Check")
+    farmCheck:SetSize(16,16) ; farmCheck:SetPoint("CENTER", farmBox, "CENTER", 0, 0)
+
+    local farmLbl = panel:CreateFontString(nil,"OVERLAY","GameFontNormalSmall")
+    farmLbl:SetPoint("LEFT", farmBox, "RIGHT", 6, 0)
+    farmLbl:SetText("Exclude farming professions (Herbalism, Mining, Skinning)")
+
+    local function SetFarmState(on)
+        if not WhatShouldIDoDB then return end
+        WhatShouldIDoDB.excludeFarming = on
+        local ac1,ac2,ac3   = C.accent      and C.accent[1]      or 0.84, C.accent      and C.accent[2]      or 0.67, C.accent      and C.accent[3]      or 0.20
+        local rb1,rb2,rb3   = C.result_bg   and C.result_bg[1]   or 0.06, C.result_bg   and C.result_bg[2]   or 0.04, C.result_bg   and C.result_bg[3]   or 0.10
+        local di1,di2,di3   = C.divider     and C.divider[1]     or 0.25, C.divider     and C.divider[2]     or 0.20, C.divider     and C.divider[3]     or 0.35
+        local br1,br2,br3   = C.bright_text and C.bright_text[1] or 1.00, C.bright_text and C.bright_text[2] or 0.90, C.bright_text and C.bright_text[3] or 0.40
+        local dm1,dm2,dm3   = C.dim_text    and C.dim_text[1]    or 0.50, C.dim_text    and C.dim_text[2]    or 0.45, C.dim_text    and C.dim_text[3]    or 0.55
+        if on then
+            farmBox:SetBackdropColor(rb1,rb2,rb3,1)
+            farmBox:SetBackdropBorderColor(ac1,ac2,ac3,1)
+            farmCheck:SetVertexColor(ac1,ac2,ac3,1)
+            farmCheck:Show()
+            farmLbl:SetTextColor(br1,br2,br3)
+        else
+            farmBox:SetBackdropColor(0.05,0.03,0.08,1)
+            farmBox:SetBackdropBorderColor(di1,di2,di3,1)
+            farmCheck:Hide()
+            farmLbl:SetTextColor(dm1,dm2,dm3)
+        end
+    end
+
+    local farmBtn = CreateFrame("Button", nil, panel)
+    farmBtn:SetHeight(20)
+    farmBtn:SetPoint("TOPLEFT", spinBtn, "BOTTOMLEFT", 0, -10)
+    farmBtn:SetPoint("RIGHT",   panel,   "RIGHT", -WSID_PAD, 0)
+    farmBtn:SetScript("OnClick", function()
+        SetFarmState(not (WhatShouldIDoDB and WhatShouldIDoDB.excludeFarming))
+    end)
+
+    -- Init state after frame shown (C table populated by then)
+    panel:SetScript("OnShow", function()
+        SetFarmState(WhatShouldIDoDB and WhatShouldIDoDB.excludeFarming or false)
+        panel:SetScript("OnShow", nil)
+    end)
 
     local spinning = false
 
     spinBtn:SetScript("OnClick", function()
         if spinning then return end
+        local excludeFarming = WhatShouldIDoDB and WhatShouldIDoDB.excludeFarming
         local pool = {}
         for _, p in ipairs(WSID_PROFESSIONS) do
             if p ~= "Fishing" and p ~= "Cooking" then
-                table.insert(pool, p)
+                if not (excludeFarming and FARMING[p]) then
+                    table.insert(pool, p)
+                end
             end
         end
         if #pool < 2 then return end
-        spinning = true ; spinBtn:SetEnabled(false) ; pairNote:SetText(" ")
+        spinning = true ; spinBtn:SetEnabled(false)
 
         -- Pre-pick two different winners
         local idx1   = math.random(#pool)
@@ -59,8 +111,6 @@ function BuildProfessionPanel(contentArea)
                 prof2Label:SetText(winner2)
                 prof2Label:SetTextColor(C.spin_text[1],C.spin_text[2],C.spin_text[3])
                 spinning = false ; spinBtn:SetEnabled(true)
-                pairNote:SetText(winner1 .. " + " .. winner2)
-                pairNote:SetTextColor(C.header_txt[1],C.header_txt[2],C.header_txt[3])
             end)
         end)
     end)
@@ -100,5 +150,4 @@ local WSID_DUNGEONS_BY_EXPANSION = {
     ["The War Within"]          = {"The Rookery","The Stonevault","City of Threads","The Dawnbreaker","Ara-Kara City of Echoes","Darkflame Cleft","Priory of the Sacred Flame","The Necrotic Wake"},
     ["Midnight"]                = {"Cinderbrew Meadery","Darkflame Cleft","The Dawnbreaker","Operation: Floodgate","Priory of the Sacred Flame","The Rookery","The Stonevault","Liberation of Undermine"},
 }
-
 
